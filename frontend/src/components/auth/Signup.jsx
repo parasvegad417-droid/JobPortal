@@ -139,7 +139,7 @@ const Signup = () => {
                             className='mt-1 h-12 rounded-xl border-slate-200 bg-slate-50 placeholder:text-slate-400 focus-visible:bg-white'
                         />
                     </div>
-                    <div className='flex flex-wrap items-center justify-between gap-3'>
+                    <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
                         <RadioGroup className="flex items-center gap-4 my-5">
                             <div className="flex items-center space-x-2">
                                 <Input
@@ -166,7 +166,7 @@ const Signup = () => {
                                 <Label htmlFor="r2">Recruiter</Label>
                             </div>
                         </RadioGroup>
-                        <div className='flex items-center gap-2'>
+                        <div className='flex min-w-0 flex-col gap-2 sm:max-w-[55%]'>
                             <Label>Profile photo (optional)</Label>
                             <Input
                                 accept="image/*"

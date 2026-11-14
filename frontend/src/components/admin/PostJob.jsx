@@ -72,7 +72,7 @@ const PostJob = () => {
             <Navbar />
             <div className='flex w-full items-center justify-center px-4 py-5'>
                 <form onSubmit = {submitHandler} className='w-full max-w-4xl rounded-2xl border border-gray-200 bg-white p-5 shadow-lg sm:p-8'>
-                    <div className='grid grid-cols-2 gap-2'>
+                    <div className='grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4'>
                         <div>
                             <Label>Title</Label>
                             <Input
@@ -175,7 +175,7 @@ const PostJob = () => {
                         {
                             companies.length > 0 && (
                                 <Select onValueChange={selectChangeHandler}>
-                                    <SelectTrigger className="w-[180px]">
+                                    <SelectTrigger className="w-full sm:w-[180px]">
                                         <SelectValue placeholder="Select a Company" />
                                     </SelectTrigger>
                                     <SelectContent>

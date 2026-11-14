@@ -20,14 +20,14 @@ const AdminJobs = () => {
   return (
     <div>
       <Navbar />
-      <div className='max-w-6xl mx-auto my-10'>
-        <div className='flex items-center justify-between my-5'>
+      <div className='mx-auto my-6 max-w-6xl sm:my-10'>
+        <div className='my-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
           <Input
-            className="w-fit"
+            className="w-full sm:max-w-xs"
             placeholder="Filter by name, role"
             onChange={(e) => setInput(e.target.value)}
           />
-          <Button onClick={() => navigate("/admin/jobs/create")}>New Jobs</Button>
+          <Button className='w-full sm:w-auto' onClick={() => navigate("/admin/jobs/create")}>New Jobs</Button>
         </div>
         <AdminJobsTable />
       </div>
