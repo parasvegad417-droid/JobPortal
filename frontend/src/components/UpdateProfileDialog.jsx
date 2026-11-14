@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog'
 import { Label } from './ui/label'
 import { Input } from './ui/input'
 import { Button } from './ui/button'
@@ -81,6 +81,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                 <DialogContent className="sm:max-w-[425px]" onInteractOutside={() => setOpen(false)}>
                     <DialogHeader>
                         <DialogTitle>Update Profile</DialogTitle>
+                        <DialogDescription>Update your contact details, skills, and resume.</DialogDescription>
                     </DialogHeader>
                     <form onSubmit={submitHandler}>
                         <div className='grid gap-4 py-4'>
