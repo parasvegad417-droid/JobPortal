@@ -47,8 +47,8 @@ export const register = async (req, res) => {
             phoneNumber,
             password: hashedPassword,
             role,
-            profile:{
-                profilePhoto:cloudResponse?.secure_url,
+            profile: {
+                profilePhoto: cloudResponse?.secure_url,
             }
         });
 
@@ -69,7 +69,7 @@ export const login = async (req, res) => {
         const email = String(req.body.email || "").trim().toLowerCase();
         const password = String(req.body.password || "");
         const { role } = req.body;
-        
+
         if (!isValidEmail(email) || email.length > 254 || !password || password.length > 128 ||
             !["student", "recruiter"].includes(role)) {
             return res.status(400).json({
@@ -113,11 +113,18 @@ export const login = async (req, res) => {
             profile: user.profile
         }
 
-        return res.status(200).cookie("token", token, { maxAge: 1 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: 'strict' }).json({
+
+        return res.status(200).cookie("token", token, {
+            maxAge: 1 * 24 * 60 * 60 * 1000,
+            httpOnly: true,
+            secure: true,
+            sameSite: "none"
+        }).json({
             message: `Welcome back ${user.fullname}`,
             user,
             success: true
-        })
+        });
+
     } catch (error) {
         console.error(error);
         return res.status(500).json({
@@ -128,10 +135,14 @@ export const login = async (req, res) => {
 }
 export const logout = async (req, res) => {
     try {
-        return res.status(200).cookie("token", "", { maxAge: 0 }).json({
+        return res.status(200).clearCookie("token", {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none"
+        }).json({
             message: "Logged out successfully.",
             success: true
-        })
+        });
     } catch (error) {
         console.error(error);
         return res.status(500).json({
@@ -139,7 +150,7 @@ export const logout = async (req, res) => {
             success: false
         });
     }
-}
+};
 export const updateProfile = async (req, res) => {
     try {
         const fullname = String(req.body.fullname || "").trim();
@@ -196,9 +207,9 @@ export const updateProfile = async (req, res) => {
         user.phoneNumber = phoneNumber;
         user.profile.bio = bio;
         user.profile.skills = skills.split(",").map(skill => skill.trim()).filter(Boolean);
-      
+
         // resume comes later here...
-        if(cloudResponse){
+        if (cloudResponse) {
             user.profile.resume = cloudResponse.secure_url // save the cloudinary url
             user.profile.resumeOriginalName = file.originalname // Save the original file name
         }
@@ -216,9 +227,9 @@ export const updateProfile = async (req, res) => {
         }
 
         return res.status(200).json({
-            message:"Profile updated successfully.",
+            message: "Profile updated successfully.",
             user,
-            success:true
+            success: true
         })
     } catch (error) {
         console.error(error);

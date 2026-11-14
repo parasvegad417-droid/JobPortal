@@ -5,7 +5,7 @@ import { MoreHorizontal } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
 import { APPLICATION_API_END_POINT } from '@/utils/constant';
-import axios from 'axios';
+import api from '@/utils/Axios';
 import { setAllApplicants } from '@/redux/applicationSlice';
 
 const shortlistingStatus = ["Accepted", "Rejected"];
@@ -20,10 +20,9 @@ const ApplicantsTable = () => {
         setOpenApplicantId(null);
         setUpdatingApplicantId(applicationId);
         try {
-            const res = await axios.post(
+            const res = await api.post(
                 `${APPLICATION_API_END_POINT}/status/${applicationId}/update`,
-                { status },
-                { withCredentials: true }
+                { status }
             );
             if (res.data.success) {
                 dispatch(setAllApplicants({

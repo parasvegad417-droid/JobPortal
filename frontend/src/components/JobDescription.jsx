@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Badge } from './ui/badge'
 import { Button } from './ui/button'
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+import api from '@/utils/Axios';
 import { APPLICATION_API_END_POINT, JOB_API_END_POINT } from '@/utils/constant';
 import { setSingleJob } from '@/redux/jobSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -24,7 +24,7 @@ const JobDescription = () => {
             return;
         }
         try {
-            const res = await axios.post(`${APPLICATION_API_END_POINT}/apply/${jobId}`, {}, {withCredentials:true});
+            const res = await api.post(`${APPLICATION_API_END_POINT}/apply/${jobId}`, {});
             
             if(res.data.success){
                 setIsApplied(true); // Update the local state
@@ -41,12 +41,12 @@ const JobDescription = () => {
     useEffect(()=>{
         const fetchSingleJob = async () => {
             try {
-                const res = await axios.get(`${JOB_API_END_POINT}/get/${jobId}`,{withCredentials:true});
+                const res = await api.get(`${JOB_API_END_POINT}/get/${jobId}`);
                 if(res.data.success){
                     dispatch(setSingleJob(res.data.job));
                     setIsApplied(false);
                     if (user?._id) {
-                        const applicationRes = await axios.get(`${APPLICATION_API_END_POINT}/check/${jobId}`, { withCredentials: true });
+                        const applicationRes = await api.get(`${APPLICATION_API_END_POINT}/check/${jobId}`);
                         setIsApplied(applicationRes.data.applied);
                     }
                 }
