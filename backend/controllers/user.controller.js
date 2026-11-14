@@ -207,6 +207,7 @@ export const updateProfile = async (req, res) => {
                 cloudResponse = await new Promise((resolve, reject) => {
                     const uploadStream = cloudinary.uploader.upload_stream({
                         resource_type: "image",
+                        access_mode: "public",
                         public_id: resumePublicId,
                         format: "pdf"
                     }, (error, result) => {
