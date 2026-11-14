@@ -1,6 +1,6 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:3001/api/v1`;
+const BASE_URL = "https://jobportal-backend-9y68.onrender.com";
 
-export const USER_API_END_POINT = `${API_BASE_URL}/user`;
-export const JOB_API_END_POINT = `${API_BASE_URL}/job`;
-export const APPLICATION_API_END_POINT = `${API_BASE_URL}/application`;
-export const COMPANY_API_END_POINT = `${API_BASE_URL}/company`;
+export const USER_API_END_POINT = `${BASE_URL}/api/v1/user`;
+export const JOB_API_END_POINT = `${BASE_URL}/api/v1/job`;
+export const COMPANY_API_END_POINT = `${BASE_URL}/api/v1/company`;
+export const APPLICATION_API_END_POINT = `${BASE_URL}/api/v1/application`;
