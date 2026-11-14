@@ -22,6 +22,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
         phoneNumber: user?.phoneNumber || "",
         bio: user?.profile?.bio || "",
         skills: user?.profile?.skills?.join(", ") || "",
+        linkedinUrl: user?.profile?.linkedinUrl || "",
         file: null
     });
     const dispatch = useDispatch();
@@ -59,6 +60,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
         formData.append("phoneNumber", input.phoneNumber);
         formData.append("bio", input.bio);
         formData.append("skills", input.skills);
+        formData.append("linkedinUrl", input.linkedinUrl.trim());
         if (input.file instanceof File) {
             formData.append("file", input.file);
         }
@@ -85,7 +87,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                 <DialogContent className="sm:max-w-[425px]" onInteractOutside={() => setOpen(false)}>
                     <DialogHeader>
                         <DialogTitle>Update Profile</DialogTitle>
-                        <DialogDescription>Update your contact details, skills, and resume.</DialogDescription>
+                        <DialogDescription>Update your contact details, LinkedIn profile, skills, and resume.</DialogDescription>
                     </DialogHeader>
                     <form onSubmit={submitHandler}>
                         <div className='grid gap-4 py-4'>
@@ -151,6 +153,19 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                                     onChange={changeEventHandler}
                                     className="sm:col-span-3"
                                     maxLength={1000}
+                                />
+                            </div>
+                            <div className='grid grid-cols-1 items-center gap-2 sm:grid-cols-4 sm:gap-4'>
+                                <Label htmlFor="linkedinUrl" className="sm:text-right">LinkedIn</Label>
+                                <Input
+                                    id="linkedinUrl"
+                                    name="linkedinUrl"
+                                    type="url"
+                                    value={input.linkedinUrl}
+                                    onChange={changeEventHandler}
+                                    className="sm:col-span-3"
+                                    maxLength={2048}
+                                    placeholder="https://www.linkedin.com/in/your-profile"
                                 />
                             </div>
                             <div className='grid grid-cols-1 items-center gap-2 sm:grid-cols-4 sm:gap-4'>

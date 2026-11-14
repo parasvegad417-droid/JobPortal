@@ -51,6 +51,7 @@ const ApplicantsTable = () => {
                         <TableHead>FullName</TableHead>
                         <TableHead>Email</TableHead>
                         <TableHead>Contact</TableHead>
+                        <TableHead>LinkedIn</TableHead>
                         <TableHead>Resume</TableHead>
                         <TableHead>Date</TableHead>
                         <TableHead className="text-right">Action</TableHead>
@@ -63,6 +64,18 @@ const ApplicantsTable = () => {
                                 <TableCell>{item?.applicant?.fullname}</TableCell>
                                 <TableCell>{item?.applicant?.email}</TableCell>
                                 <TableCell>{item?.applicant?.phoneNumber}</TableCell>
+                                <TableCell>
+                                    {item?.applicant?.profile?.linkedinUrl ? (
+                                        <a
+                                            href={item.applicant.profile.linkedinUrl}
+                                            target='_blank'
+                                            rel='noopener noreferrer'
+                                            className='text-blue-600 hover:underline'
+                                        >
+                                            View profile
+                                        </a>
+                                    ) : 'NA'}
+                                </TableCell>
                                 <TableCell >
                                     {
                                         item.applicant?.profile?.resume ? <a className="text-blue-600 cursor-pointer" href={item?.applicant?.profile?.resume} target="_blank" rel="noopener noreferrer" type="application/pdf">{item?.applicant?.profile?.resumeOriginalName}</a> : <span>NA</span>

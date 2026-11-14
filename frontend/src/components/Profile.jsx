@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import Navbar from './shared/Navbar'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { Button } from './ui/button'
-import { Contact, Mail, Pen } from 'lucide-react'
+import { Contact, Linkedin, Mail, Pen } from 'lucide-react'
 import { Badge } from './ui/badge'
 import { Label } from './ui/label'
 import AppliedJobTable from './AppliedJobTable'
@@ -17,6 +17,7 @@ const Profile = () => {
     const navigate = useNavigate();
     const skills = user?.profile?.skills ?? [];
     const resumeUrl = user?.profile?.resume;
+    const linkedinUrl = user?.profile?.linkedinUrl;
 
     useGetAppliedJobs(Boolean(user));
 
@@ -56,6 +57,19 @@ const Profile = () => {
                         <Contact />
                         <span>{user?.phoneNumber}</span>
                     </div>
+                    {linkedinUrl && (
+                        <div className='flex items-center gap-3 my-2'>
+                            <Linkedin className='h-5 w-5 shrink-0' aria-hidden='true' />
+                            <a
+                                href={linkedinUrl}
+                                target='_blank'
+                                rel='noopener noreferrer'
+                                className='min-w-0 break-all text-blue-600 hover:underline'
+                            >
+                                View LinkedIn profile
+                            </a>
+                        </div>
+                    )}
                 </div>
                 <div className='my-5'>
                     <h1>Skills</h1>

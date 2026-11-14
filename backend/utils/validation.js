@@ -12,3 +12,20 @@ export const isValidHttpUrl = (value) => {
         return false;
     }
 };
+
+export const isValidLinkedInUrl = (value) => {
+    try {
+        const url = new URL(value);
+        const hostname = url.hostname.toLowerCase();
+        const pathSegments = url.pathname.split("/").filter(Boolean);
+
+        return url.protocol === "https:" &&
+            (hostname === "linkedin.com" || hostname.endsWith(".linkedin.com")) &&
+            !url.username &&
+            !url.password &&
+            ["in", "pub"].includes(pathSegments[0]) &&
+            Boolean(pathSegments[1]);
+    } catch {
+        return false;
+    }
+};

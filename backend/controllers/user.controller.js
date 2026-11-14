@@ -5,7 +5,7 @@ import { randomUUID } from "node:crypto";
 import { Readable } from "node:stream";
 import getDataUri from "../utils/datauri.js";
 import cloudinary from "../utils/cloudinary.js";
-import { isValidEmail, isValidPhoneNumber } from "../utils/validation.js";
+import { isValidEmail, isValidLinkedInUrl, isValidPhoneNumber } from "../utils/validation.js";
 
 export const register = async (req, res) => {
     try {
@@ -162,12 +162,14 @@ export const updateProfile = async (req, res) => {
         const phoneNumber = String(req.body.phoneNumber || "").trim();
         const bio = String(req.body.bio || "").trim();
         const skills = String(req.body.skills || "");
+        const linkedinUrl = String(req.body.linkedinUrl || "").trim();
         const file = req.file;
 
         if (!fullname || fullname.length > 80 || !isValidEmail(email) || email.length > 254 ||
-            !isValidPhoneNumber(phoneNumber) || bio.length > 500 || skills.length > 1000) {
+            !isValidPhoneNumber(phoneNumber) || bio.length > 500 || skills.length > 1000 ||
+            linkedinUrl.length > 2048 || (linkedinUrl && !isValidLinkedInUrl(linkedinUrl))) {
             return res.status(400).json({
-                message: "Enter a name (up to 80 characters), valid email, 10-digit phone number, bio up to 500 characters, and skills up to 1000 characters.",
+                message: "Enter a name (up to 80 characters), valid email, 10-digit phone number, bio up to 500 characters, skills up to 1000 characters, and, if provided, a valid LinkedIn profile URL.",
                 success: false
             });
         }
@@ -232,6 +234,7 @@ export const updateProfile = async (req, res) => {
         user.phoneNumber = phoneNumber;
         user.profile.bio = bio;
         user.profile.skills = skills.split(",").map(skill => skill.trim()).filter(Boolean);
+        user.profile.linkedinUrl = linkedinUrl;
 
         if (cloudResponse) {
             user.profile.resume = cloudResponse.secure_url;
