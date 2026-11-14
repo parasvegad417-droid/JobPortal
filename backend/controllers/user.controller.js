@@ -118,7 +118,8 @@ export const login = async (req, res) => {
             maxAge: 1 * 24 * 60 * 60 * 1000,
             httpOnly: true,
             secure: true,
-            sameSite: "none"
+            sameSite: "none",
+            path: "/"
         }).json({
             message: `Welcome back ${user.fullname}`,
             user,
@@ -138,7 +139,8 @@ export const logout = async (req, res) => {
         return res.status(200).clearCookie("token", {
             httpOnly: true,
             secure: true,
-            sameSite: "none"
+            sameSite: "none",
+            path: "/"
         }).json({
             message: "Logged out successfully.",
             success: true
