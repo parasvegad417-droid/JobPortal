@@ -69,7 +69,7 @@ const Profile = () => {
                     <Label className="text-md font-bold">Resume</Label>
                     {
                         resumeUrl
-                            ? <a target='_blank' rel='noreferrer' href={resumeUrl} className='text-blue-500 w-full cursor-pointer hover:underline'>{user?.profile?.resumeOriginalName || 'View resume'}</a>
+                            ? <a target='_blank' rel='noopener noreferrer' type='application/pdf' href={resumeUrl} className='text-blue-500 w-full cursor-pointer hover:underline'>{user?.profile?.resumeOriginalName || 'View resume'}</a>
                             : <span>NA</span>
                     }
                 </div>

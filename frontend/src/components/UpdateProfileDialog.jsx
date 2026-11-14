@@ -10,6 +10,8 @@ import { USER_API_END_POINT } from '@/utils/constant'
 import { setUser } from '@/redux/authSlice'
 import { toast } from 'sonner'
 
+const MAX_RESUME_SIZE = 10 * 1024 * 1024;
+
 const UpdateProfileDialog = ({ open, setOpen }) => {
     const [loading, setLoading] = useState(false);
     const { user } = useSelector(store => store.auth);
@@ -30,8 +32,14 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
 
     const fileChangeHandler = (e) => {
         const file = e.target.files?.[0];
-        if (file && file.type !== 'application/pdf') {
+        if (file && !/\.pdf$/i.test(file.name)) {
             toast.error('Resume must be a PDF file.');
+            e.target.value = '';
+            setInput({ ...input, file: null });
+            return;
+        }
+        if (file && file.size > MAX_RESUME_SIZE) {
+            toast.error('Resume must be 10 MB or smaller.');
             e.target.value = '';
             setInput({ ...input, file: null });
             return;
@@ -56,11 +64,7 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
         }
         try {
             setLoading(true);
-            const res = await api.post(`${USER_API_END_POINT}/profile/update`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
+            const res = await api.post(`${USER_API_END_POINT}/profile/update`, formData);
             if (res.data.success) {
                 dispatch(setUser(res.data.user));
                 toast.success(res.data.message);
@@ -150,12 +154,12 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                                 />
                             </div>
                             <div className='grid grid-cols-1 items-center gap-2 sm:grid-cols-4 sm:gap-4'>
-                                <Label htmlFor="file" className="sm:text-right">Resume</Label>
+                                <Label htmlFor="file" className="sm:text-right">Resume (PDF, max 10 MB)</Label>
                                 <Input
                                     id="file"
                                     name="file"
                                     type="file"
-                                    accept="application/pdf"
+                                    accept=".pdf,application/pdf"
                                     onChange={fileChangeHandler}
                                     className="sm:col-span-3"
                                 />

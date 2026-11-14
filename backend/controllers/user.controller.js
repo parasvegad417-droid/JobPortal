@@ -1,6 +1,8 @@
 import { User } from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { randomUUID } from "node:crypto";
+import { Readable } from "node:stream";
 import getDataUri from "../utils/datauri.js";
 import cloudinary from "../utils/cloudinary.js";
 import { isValidEmail, isValidPhoneNumber } from "../utils/validation.js";
@@ -169,9 +171,11 @@ export const updateProfile = async (req, res) => {
                 success: false
             });
         }
-        if (file && file.mimetype !== "application/pdf") {
+        const hasPdfSignature = file && Buffer.isBuffer(file.buffer) &&
+            file.buffer.subarray(0, 1024).includes(Buffer.from("%PDF-"));
+        if (file && (!/\.pdf$/i.test(file.originalname || "") || !hasPdfSignature)) {
             return res.status(400).json({
-                message: "Resume must be a PDF file.",
+                message: "Resume must be a valid PDF file.",
                 success: false
             });
         }
@@ -193,15 +197,33 @@ export const updateProfile = async (req, res) => {
             });
         }
 
-        const resumePublicId = file
-            ? `${file.originalname.replace(/\.pdf$/i, "").replace(/[^a-zA-Z0-9_-]/g, "-")}-${Date.now()}.pdf`
-            : null;
-        const cloudResponse = file
-            ? await cloudinary.uploader.upload(getDataUri(file).content, {
-                resource_type: "raw",
-                public_id: resumePublicId
-            })
-            : null;
+        let cloudResponse = null;
+        if (file) {
+            const fileName = file.originalname
+                .replace(/\.pdf$/i, "")
+                .replace(/[^a-zA-Z0-9_-]/g, "-") || "resume";
+            const resumePublicId = `${fileName}-${randomUUID()}`;
+            try {
+                cloudResponse = await new Promise((resolve, reject) => {
+                    const uploadStream = cloudinary.uploader.upload_stream({
+                        resource_type: "image",
+                        public_id: resumePublicId,
+                        format: "pdf"
+                    }, (error, result) => {
+                        if (error) return reject(error);
+                        if (!result) return reject(new Error("Cloudinary returned no upload result."));
+                        resolve(result);
+                    });
+                    Readable.from([file.buffer]).on("error", reject).pipe(uploadStream);
+                });
+            } catch (error) {
+                console.error("Resume upload failed:", error);
+                return res.status(502).json({
+                    message: "Resume upload failed. Please try again.",
+                    success: false
+                });
+            }
+        }
 
         // updating data
         user.fullname = fullname;
@@ -210,10 +232,9 @@ export const updateProfile = async (req, res) => {
         user.profile.bio = bio;
         user.profile.skills = skills.split(",").map(skill => skill.trim()).filter(Boolean);
 
-        // resume comes later here...
         if (cloudResponse) {
-            user.profile.resume = cloudResponse.secure_url // save the cloudinary url
-            user.profile.resumeOriginalName = file.originalname // Save the original file name
+            user.profile.resume = cloudResponse.secure_url;
+            user.profile.resumeOriginalName = file.originalname;
         }
 
 
